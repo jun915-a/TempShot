@@ -21,12 +21,14 @@ fun MemoInput(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = "メモを入力..."
+    placeholder: String = "メモを追加..."
 ) {
     Column(modifier = modifier) {
         Text(
             text = "メモ",
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         BasicTextField(
@@ -34,8 +36,8 @@ fun MemoInput(
             onValueChange = onValueChange,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White, RoundedCornerShape(8.dp))
-                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(8.dp))
+                .background(Color(0xFFF5F5F9), RoundedCornerShape(12.dp))
+                .border(1.5.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
                 .padding(12.dp),
             textStyle = TextStyle(
                 fontSize = 14.sp,
