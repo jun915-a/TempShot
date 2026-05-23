@@ -26,6 +26,7 @@ class MainViewModel @Inject constructor(
     val memo: StateFlow<String> = _memo.asStateFlow()
 
     private val testMode = true // ダミー画像表示用
+    val defaultExpiryDays = 3 // 一時保存のデフォルト期間（日数）
 
     init {
         viewModelScope.launch {

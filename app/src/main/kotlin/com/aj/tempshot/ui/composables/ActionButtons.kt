@@ -49,13 +49,14 @@ fun ActionButtons(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            OutlinedButton(
+            Button(
                 onClick = onTemporary,
                 modifier = Modifier
                     .weight(1f)
-                    .background(Color.White, RoundedCornerShape(8.dp)),
+                    .background(WarningOrange, RoundedCornerShape(8.dp)),
+                colors = ButtonDefaults.buttonColors(containerColor = WarningOrange)
             ) {
-                Text("一時保存 ⏳")
+                Text("3日後に削除 ⏳", color = Color.White)
             }
 
             Button(
@@ -66,49 +67,6 @@ fun ActionButtons(
                 colors = ButtonDefaults.buttonColors(containerColor = DeleteRed)
             ) {
                 Text("削除 ↓", color = Color.White)
-            }
-        }
-    }
-}
-
-@Composable
-fun ExpiryDurationButtons(
-    onSelect: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(8.dp))
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = "削除までの期間を選択",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Button(
-                onClick = { onSelect(1) },
-                modifier = Modifier.weight(1f)
-            ) {
-                Text("1日")
-            }
-            Button(
-                onClick = { onSelect(3) },
-                modifier = Modifier.weight(1f)
-            ) {
-                Text("3日")
-            }
-            Button(
-                onClick = { onSelect(7) },
-                modifier = Modifier.weight(1f)
-            ) {
-                Text("1週間")
             }
         }
     }

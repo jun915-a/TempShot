@@ -36,7 +36,6 @@ fun MainScreen(viewModel: MainViewModel) {
     val currentImage by viewModel.currentImage.collectAsStateWithLifecycle()
     val memo by viewModel.memo.collectAsStateWithLifecycle()
     val unorganizedCount by viewModel.unorganizedCount.collectAsStateWithLifecycle()
-    var showExpiryDialog by remember { mutableStateOf(false) }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -82,7 +81,7 @@ fun MainScreen(viewModel: MainViewModel) {
                         viewModel.markAsOrganized()
                     },
                     onSwipeLeft = {
-                        showExpiryDialog = true
+                        viewModel.markAsTemporary(viewModel.defaultExpiryDays)
                     },
                     onSwipeDown = {
                         viewModel.deleteImage()
@@ -113,7 +112,7 @@ fun MainScreen(viewModel: MainViewModel) {
                         viewModel.markAsOrganized()
                     },
                     onTemporary = {
-                        showExpiryDialog = true
+                        viewModel.markAsTemporary(viewModel.defaultExpiryDays)
                     },
                     onDelete = {
                         viewModel.deleteImage()
@@ -126,25 +125,6 @@ fun MainScreen(viewModel: MainViewModel) {
             }
         }
 
-    }
-
-    if (showExpiryDialog) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.5f)),
-            contentAlignment = Alignment.Center
-        ) {
-            ExpiryDurationButtons(
-                onSelect = { days ->
-                    viewModel.markAsTemporary(days)
-                    showExpiryDialog = false
-                },
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .padding(16.dp)
-            )
-        }
     }
 }
 
