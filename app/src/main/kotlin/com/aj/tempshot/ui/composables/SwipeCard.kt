@@ -2,7 +2,6 @@ package com.aj.tempshot.ui.composables
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
@@ -39,33 +38,33 @@ fun SwipeCard(
     swipeAction: SwipeAction? = null,
     content: @Composable () -> Unit
 ) {
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var offsetY by remember { mutableFloatStateOf(0f) }
-    var isAnimatingAction by remember { mutableFloatStateOf(0f) }
+    var dragOffsetX by remember { mutableFloatStateOf(0f) }
+    var dragOffsetY by remember { mutableFloatStateOf(0f) }
+    var animationOffsetX by remember { mutableFloatStateOf(0f) }
+    var animationOffsetY by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(swipeAction) {
         if (swipeAction != null) {
-            offsetX = when (swipeAction) {
+            animationOffsetX = when (swipeAction) {
                 SwipeAction.RIGHT -> 500f
                 SwipeAction.LEFT -> -500f
                 SwipeAction.DOWN -> 0f
             }
-            offsetY = when (swipeAction) {
+            animationOffsetY = when (swipeAction) {
                 SwipeAction.DOWN -> 500f
                 else -> 0f
             }
-            isAnimatingAction = 1f
         }
     }
 
-    val animatedOffsetX by animateDpAsState(targetValue = (offsetX / 10).dp)
-    val animatedOffsetY by animateDpAsState(targetValue = (offsetY / 10).dp)
-    val rotation by animateFloatAsState(targetValue = offsetX / 25)
+    val animatedOffsetX by animateDpAsState(targetValue = (animationOffsetX / 10).dp)
+    val animatedOffsetY by animateDpAsState(targetValue = (animationOffsetY / 10).dp)
+    val rotation by animateFloatAsState(targetValue = animationOffsetX / 25)
     val alpha by animateFloatAsState(
-        targetValue = (1f - (abs(offsetX) / 1000f)).coerceIn(0f, 1f)
+        targetValue = (1f - (abs(animationOffsetX) / 1000f)).coerceIn(0f, 1f)
     )
     val scale by animateFloatAsState(
-        targetValue = (1f - (abs(offsetX) / 3000f)).coerceIn(0.8f, 1f)
+        targetValue = (1f - (abs(animationOffsetX) / 3000f)).coerceIn(0.8f, 1f)
     )
 
     Box(
@@ -79,25 +78,29 @@ fun SwipeCard(
                 detectDragGestures(
                     onDrag = { change, dragAmount ->
                         change.consume()
-                        offsetX += dragAmount.x * 1.5f
-                        offsetY += dragAmount.y * 1.5f
+                        dragOffsetX += dragAmount.x * 1.5f
+                        dragOffsetY += dragAmount.y * 1.5f
                     },
                     onDragEnd = {
                         val threshold = 150f
                         when {
-                            abs(offsetX) > threshold && abs(offsetX) > abs(offsetY) -> {
-                                if (offsetX > 0) {
+                            abs(dragOffsetX) > threshold && abs(dragOffsetX) > abs(dragOffsetY) -> {
+                                if (dragOffsetX > 0) {
                                     onSwipeRight()
                                 } else {
                                     onSwipeLeft()
                                 }
                             }
-                            offsetY > threshold -> {
+                            dragOffsetY > threshold -> {
                                 onSwipeDown()
                             }
+                            else -> {
+                                animationOffsetX = 0f
+                                animationOffsetY = 0f
+                            }
                         }
-                        offsetX = 0f
-                        offsetY = 0f
+                        dragOffsetX = 0f
+                        dragOffsetY = 0f
                     }
                 )
             }
@@ -107,23 +110,23 @@ fun SwipeCard(
         content()
 
         val threshold = 100f
-        if (offsetX > threshold) {
+        if (dragOffsetX > threshold) {
             SwipeLabel(
                 text = "整理済み ✓",
                 color = Color(0xFF4CAF50),
-                alpha = (offsetX - threshold) / 100f
+                alpha = (dragOffsetX - threshold) / 100f
             )
-        } else if (offsetX < -threshold) {
+        } else if (dragOffsetX < -threshold) {
             SwipeLabel(
                 text = "3日後に削除 ⏳",
                 color = Color(0xFFFFA726),
-                alpha = (abs(offsetX) - threshold) / 100f
+                alpha = (abs(dragOffsetX) - threshold) / 100f
             )
-        } else if (offsetY > threshold) {
+        } else if (dragOffsetY > threshold) {
             SwipeLabel(
                 text = "削除 🗑️",
                 color = Color(0xFFEF5350),
-                alpha = (offsetY - threshold) / 100f
+                alpha = (dragOffsetY - threshold) / 100f
             )
         }
     }
