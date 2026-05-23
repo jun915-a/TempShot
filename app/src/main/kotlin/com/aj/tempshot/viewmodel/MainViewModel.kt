@@ -11,6 +11,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+enum class SwipeAction {
+    RIGHT, LEFT, DOWN
+}
+
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repository: IImageRepository
@@ -24,6 +28,9 @@ class MainViewModel @Inject constructor(
 
     private val _memo = MutableStateFlow("")
     val memo: StateFlow<String> = _memo.asStateFlow()
+
+    private val _swipeAction = MutableStateFlow<SwipeAction?>(null)
+    val swipeAction: StateFlow<SwipeAction?> = _swipeAction.asStateFlow()
 
     private val testMode = true // ダミー画像表示用
     val defaultExpiryDays = 3 // 一時保存のデフォルト期間（日数）
@@ -92,28 +99,34 @@ class MainViewModel @Inject constructor(
     }
 
     fun markAsOrganized() {
+        _swipeAction.value = SwipeAction.RIGHT
         val image = _currentImage.value ?: return
         viewModelScope.launch {
             saveMemo()
             repository.markAsOrganized(image.imagePath)
             loadNextImage()
+            _swipeAction.value = null
         }
     }
 
     fun markAsTemporary(expiryDays: Int) {
+        _swipeAction.value = SwipeAction.LEFT
         val image = _currentImage.value ?: return
         viewModelScope.launch {
             saveMemo()
             repository.markAsTemporary(image.imagePath, expiryDays)
             loadNextImage()
+            _swipeAction.value = null
         }
     }
 
     fun deleteImage() {
+        _swipeAction.value = SwipeAction.DOWN
         val image = _currentImage.value ?: return
         viewModelScope.launch {
             repository.deleteImage(image.imagePath)
             loadNextImage()
+            _swipeAction.value = null
         }
     }
 }

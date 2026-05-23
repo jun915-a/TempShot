@@ -2,6 +2,7 @@ package com.aj.tempshot.ui.composables
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -25,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aj.tempshot.viewmodel.SwipeAction
 import kotlin.math.abs
 
 @Composable
@@ -33,10 +36,27 @@ fun SwipeCard(
     onSwipeRight: () -> Unit,
     onSwipeLeft: () -> Unit,
     onSwipeDown: () -> Unit,
+    swipeAction: SwipeAction? = null,
     content: @Composable () -> Unit
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
+    var isAnimatingAction by remember { mutableFloatStateOf(0f) }
+
+    LaunchedEffect(swipeAction) {
+        if (swipeAction != null) {
+            offsetX = when (swipeAction) {
+                SwipeAction.RIGHT -> 500f
+                SwipeAction.LEFT -> -500f
+                SwipeAction.DOWN -> 0f
+            }
+            offsetY = when (swipeAction) {
+                SwipeAction.DOWN -> 500f
+                else -> 0f
+            }
+            isAnimatingAction = 1f
+        }
+    }
 
     val animatedOffsetX by animateDpAsState(targetValue = (offsetX / 10).dp)
     val animatedOffsetY by animateDpAsState(targetValue = (offsetY / 10).dp)

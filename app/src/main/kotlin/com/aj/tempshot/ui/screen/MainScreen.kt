@@ -13,9 +13,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +31,7 @@ fun MainScreen(viewModel: MainViewModel) {
     val currentImage by viewModel.currentImage.collectAsStateWithLifecycle()
     val memo by viewModel.memo.collectAsStateWithLifecycle()
     val unorganizedCount by viewModel.unorganizedCount.collectAsStateWithLifecycle()
+    val swipeAction by viewModel.swipeAction.collectAsStateWithLifecycle()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -83,7 +81,8 @@ fun MainScreen(viewModel: MainViewModel) {
                     },
                     onSwipeDown = {
                         viewModel.deleteImage()
-                    }
+                    },
+                    swipeAction = swipeAction
                 ) {
                     currentImage?.let { image ->
                         if (image.imagePath.startsWith("test_image_")) {
