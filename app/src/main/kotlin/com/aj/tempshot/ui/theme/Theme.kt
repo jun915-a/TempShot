@@ -1,7 +1,6 @@
 package com.aj.tempshot.ui.theme
 
 import android.content.res.Configuration
-import androidx.compose.foundation.isSystemInDarkMode
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
