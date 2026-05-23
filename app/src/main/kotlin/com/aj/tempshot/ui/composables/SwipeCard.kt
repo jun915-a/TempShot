@@ -78,20 +78,28 @@ fun SwipeCard(
                 detectDragGestures(
                     onDrag = { change, dragAmount ->
                         change.consume()
-                        dragOffsetX += dragAmount.x * 1.5f
-                        dragOffsetY += dragAmount.y * 1.5f
+                        dragOffsetX += dragAmount.x
+                        dragOffsetY += dragAmount.y
                     },
                     onDragEnd = {
-                        val threshold = 150f
+                        val horizontalThreshold = 150f
+                        val verticalThreshold = 150f
+                        val minDirectionalDifference = 50f
+
+                        val absoluteX = abs(dragOffsetX)
+                        val absoluteY = abs(dragOffsetY)
+                        val isHorizontalSwipe = absoluteX > absoluteY + minDirectionalDifference
+                        val isVerticalSwipe = absoluteY > absoluteX + minDirectionalDifference
+
                         when {
-                            abs(dragOffsetX) > threshold && abs(dragOffsetX) > abs(dragOffsetY) -> {
+                            isHorizontalSwipe && absoluteX > horizontalThreshold -> {
                                 if (dragOffsetX > 0) {
                                     onSwipeRight()
                                 } else {
                                     onSwipeLeft()
                                 }
                             }
-                            dragOffsetY > threshold -> {
+                            isVerticalSwipe && absoluteY > verticalThreshold -> {
                                 onSwipeDown()
                             }
                             else -> {
