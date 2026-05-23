@@ -40,31 +40,32 @@ fun SwipeCard(
 ) {
     var dragOffsetX by remember { mutableFloatStateOf(0f) }
     var dragOffsetY by remember { mutableFloatStateOf(0f) }
-    var animationOffsetX by remember { mutableFloatStateOf(0f) }
-    var animationOffsetY by remember { mutableFloatStateOf(0f) }
+    var displayOffsetX by remember { mutableFloatStateOf(0f) }
+    var displayOffsetY by remember { mutableFloatStateOf(0f) }
+    var isDragging by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(swipeAction) {
         if (swipeAction != null) {
-            animationOffsetX = when (swipeAction) {
+            displayOffsetX = when (swipeAction) {
                 SwipeAction.RIGHT -> 500f
                 SwipeAction.LEFT -> -500f
                 SwipeAction.DOWN -> 0f
             }
-            animationOffsetY = when (swipeAction) {
+            displayOffsetY = when (swipeAction) {
                 SwipeAction.DOWN -> 500f
                 else -> 0f
             }
         }
     }
 
-    val animatedOffsetX by animateDpAsState(targetValue = (animationOffsetX / 10).dp)
-    val animatedOffsetY by animateDpAsState(targetValue = (animationOffsetY / 10).dp)
-    val rotation by animateFloatAsState(targetValue = animationOffsetX / 25)
+    val animatedOffsetX by animateDpAsState(targetValue = (displayOffsetX / 10).dp)
+    val animatedOffsetY by animateDpAsState(targetValue = (displayOffsetY / 10).dp)
+    val rotation by animateFloatAsState(targetValue = displayOffsetX / 25)
     val alpha by animateFloatAsState(
-        targetValue = (1f - (abs(animationOffsetX) / 1000f)).coerceIn(0f, 1f)
+        targetValue = (1f - (abs(displayOffsetX) / 1000f)).coerceIn(0f, 1f)
     )
     val scale by animateFloatAsState(
-        targetValue = (1f - (abs(animationOffsetX) / 3000f)).coerceIn(0.8f, 1f)
+        targetValue = (1f - (abs(displayOffsetX) / 3000f)).coerceIn(0.8f, 1f)
     )
 
     Box(
@@ -78,8 +79,11 @@ fun SwipeCard(
                 detectDragGestures(
                     onDrag = { change, dragAmount ->
                         change.consume()
+                        if (isDragging == 0f) isDragging = 1f
                         dragOffsetX += dragAmount.x
                         dragOffsetY += dragAmount.y
+                        displayOffsetX = dragOffsetX
+                        displayOffsetY = dragOffsetY
                     },
                     onDragEnd = {
                         val horizontalThreshold = 150f
@@ -103,12 +107,14 @@ fun SwipeCard(
                                 onSwipeDown()
                             }
                             else -> {
-                                animationOffsetX = 0f
-                                animationOffsetY = 0f
+                                displayOffsetX = 0f
+                                displayOffsetY = 0f
                             }
                         }
+
                         dragOffsetX = 0f
                         dragOffsetY = 0f
+                        isDragging = 0f
                     }
                 )
             }
@@ -118,24 +124,26 @@ fun SwipeCard(
         content()
 
         val threshold = 100f
-        if (dragOffsetX > threshold) {
-            SwipeLabel(
-                text = "整理済み ✓",
-                color = Color(0xFF4CAF50),
-                alpha = (dragOffsetX - threshold) / 100f
-            )
-        } else if (dragOffsetX < -threshold) {
-            SwipeLabel(
-                text = "3日後に削除 ⏳",
-                color = Color(0xFFFFA726),
-                alpha = (abs(dragOffsetX) - threshold) / 100f
-            )
-        } else if (dragOffsetY > threshold) {
-            SwipeLabel(
-                text = "削除 🗑️",
-                color = Color(0xFFEF5350),
-                alpha = (dragOffsetY - threshold) / 100f
-            )
+        if (isDragging > 0f) {
+            if (dragOffsetX > threshold) {
+                SwipeLabel(
+                    text = "整理済み ✓",
+                    color = Color(0xFF4CAF50),
+                    alpha = (dragOffsetX - threshold) / 100f
+                )
+            } else if (dragOffsetX < -threshold) {
+                SwipeLabel(
+                    text = "3日後に削除 ⏳",
+                    color = Color(0xFFFFA726),
+                    alpha = (abs(dragOffsetX) - threshold) / 100f
+                )
+            } else if (dragOffsetY > threshold) {
+                SwipeLabel(
+                    text = "削除 🗑️",
+                    color = Color(0xFFEF5350),
+                    alpha = (dragOffsetY - threshold) / 100f
+                )
+            }
         }
     }
 }
