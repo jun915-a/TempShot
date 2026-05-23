@@ -1,11 +1,13 @@
 package com.aj.tempshot.ui.theme
 
+import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkMode
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
 
 private val LightColors = lightColorScheme(
     primary = Primary,
@@ -34,6 +36,12 @@ private val DarkColors = darkColorScheme(
     errorContainer = ErrorContainer,
     outline = Outline
 )
+
+@Composable
+fun isSystemInDarkMode(): Boolean {
+    val configuration = LocalConfiguration.current
+    return configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+}
 
 @Composable
 fun TempShotTheme(
