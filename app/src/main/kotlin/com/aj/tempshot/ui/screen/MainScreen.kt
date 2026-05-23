@@ -89,12 +89,16 @@ fun MainScreen(viewModel: MainViewModel) {
                     }
                 ) {
                     currentImage?.let { image ->
-                        AsyncImage(
-                            model = image.imagePath,
-                            contentDescription = "Current Image",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
+                        if (image.imagePath.startsWith("test_image_")) {
+                            TestImagePlaceholder(imagePath = image.imagePath)
+                        } else {
+                            AsyncImage(
+                                model = image.imagePath,
+                                contentDescription = "Current Image",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
                 }
 
@@ -139,6 +143,42 @@ fun MainScreen(viewModel: MainViewModel) {
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .padding(16.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun TestImagePlaceholder(imagePath: String) {
+    val colors = listOf(
+        Color(0xFF6200EE),
+        Color(0xFF03DAC6),
+        Color(0xFFFFA726),
+        Color(0xFFEF5350)
+    )
+    val colorIndex = imagePath.takeLast(1).toIntOrNull()?.rem(colors.size) ?: 0
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors[colorIndex]),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                text = "テスト画像",
+                style = MaterialTheme.typography.displaySmall,
+                color = Color.White
+            )
+            Text(
+                text = imagePath,
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White,
+                modifier = Modifier.padding(top = 16.dp)
             )
         }
     }

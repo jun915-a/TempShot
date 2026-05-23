@@ -25,12 +25,41 @@ class MainViewModel @Inject constructor(
     private val _memo = MutableStateFlow("")
     val memo: StateFlow<String> = _memo.asStateFlow()
 
+    private val testMode = true // ダミー画像表示用
+
     init {
         viewModelScope.launch {
-            repository.registerScreenshotsIfNotExists()
-            loadNextImage()
-            observeUnorganizedCount()
+            if (testMode) {
+                loadTestImages()
+            } else {
+                repository.registerScreenshotsIfNotExists()
+                loadNextImage()
+                observeUnorganizedCount()
+            }
         }
+    }
+
+    private suspend fun loadTestImages() {
+        val testImages = listOf(
+            Image(
+                imagePath = "test_image_1",
+                memo = "サンプル画像 1",
+                isOrganized = false
+            ),
+            Image(
+                imagePath = "test_image_2",
+                memo = "サンプル画像 2",
+                isOrganized = false
+            ),
+            Image(
+                imagePath = "test_image_3",
+                memo = "サンプル画像 3",
+                isOrganized = false
+            )
+        )
+        testImages.forEach { repository.saveImage(it) }
+        loadNextImage()
+        observeUnorganizedCount()
     }
 
     private fun loadNextImage() {
