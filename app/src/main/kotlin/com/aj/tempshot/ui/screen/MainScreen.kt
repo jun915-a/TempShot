@@ -24,9 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.aj.tempshot.domain.model.Image
 import com.aj.tempshot.ui.composables.ActionButtons
-import com.aj.tempshot.ui.composables.ExpiryDurationButtons
 import com.aj.tempshot.ui.composables.MemoInput
 import com.aj.tempshot.ui.composables.SwipeCard
 import com.aj.tempshot.viewmodel.MainViewModel
