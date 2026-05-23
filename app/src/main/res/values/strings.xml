@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TempShot</string>
+    <string name="organize_button">整理済みにする</string>
+    <string name="temporary_button">一時保存</string>
+    <string name="delete_button">削除</string>
+    <string name="memo_hint">メモを入力...</string>
+    <string name="expiry_duration">削除までの期間を選択</string>
+    <string name="one_day">1日</string>
+    <string name="three_days">3日</string>
+    <string name="one_week">1週間</string>
+    <string name="all_organized">すべての画像が整理されました！</string>
+    <string name="unorganized_count">整理中: %d 件</string>
+</resources>
