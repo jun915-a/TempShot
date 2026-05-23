@@ -44,13 +44,7 @@ fun MainScreen(viewModel: MainViewModel) {
         color = MaterialTheme.colorScheme.background
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = androidx.compose.foundation.background(
-                        color = Color(0xFFFAFAFE)
-                    ).brush
-                ),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
